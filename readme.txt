@@ -19,3 +19,18 @@
  // execute this line to "run and save" the .zshrc
  source .zshrc
 
+ // create and start
+ flutter create 
+ flutter run
+
+ // vs code command 
+ command shift P // switch device
+ run on top to run
+ ctrl space // class option
+
+ // meterial icon theme, awsome flutter snuppets, flutter
+
+ // vs shortcut
+    command J // show termina;
+    command b // show sidebar
+    fn ctrl space // class option
