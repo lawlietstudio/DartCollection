@@ -1,3 +1,10 @@
+
+// create app
+https://docs.flutter.dev/get-started/test-drive#create-app
+
+// run 
+open -a simulator
+
  // use flutter command for current session
  export PATH="$PATH:`pwd`/flutter/bin"
 
@@ -34,3 +41,4 @@
     command J // show termina;
     command b // show sidebar
     fn ctrl space // class option
+>>>>>>> 181a38f1e382af191a28fac72d3ba6fb215a0b35
