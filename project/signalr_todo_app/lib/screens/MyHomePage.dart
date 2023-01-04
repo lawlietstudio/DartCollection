@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -46,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     connection?.on('RefreshTodoItems', (newToDoItems) {
+      print(json.encode(newToDoItems));
       print(newToDoItems![0][0]);
       print(newToDoItems[0][0]['id']);
 

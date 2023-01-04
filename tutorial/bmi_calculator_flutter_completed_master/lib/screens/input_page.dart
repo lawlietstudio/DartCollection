@@ -30,6 +30,7 @@ class _InputPageState extends State<InputPage> {
       appBar: AppBar(
         title: Text('BMI CALCULATOR'),
         backgroundColor: Color(0xFF0A0E21),
+        shadowColor: Colors.transparent,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -38,7 +38,10 @@ open -a simulator
  // meterial icon theme, awsome flutter snuppets, flutter
 
  // vs shortcut
-    command J // show termina;
+    command J // show terminal;
     command b // show sidebar
     fn ctrl space // class option
->>>>>>> 181a38f1e382af191a28fac72d3ba6fb215a0b35
+
+
+ // build web
+flutter build web 
