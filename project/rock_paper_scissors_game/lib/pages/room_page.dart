@@ -65,29 +65,47 @@ class _RoomPageState extends State<RoomPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back_ios),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           title: Text("Lobby"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                createRoom();
-              },
-              icon: Icon(Icons.add),
-            )
-          ],
+          // actions: [
+          //   IconButton(
+          //     onPressed: () {
+          //       createRoom();
+          //     },
+          //     icon: Icon(Icons.add),
+          //   )
+          // ],
         ),
         body: Column(
           children: [
             Expanded(
-              flex: 4,
+              flex: 5,
               child: rooms.isEmpty
-                  ? Center(child: Text("No Room"))
+                  ? Center(
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          "No Room",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Color.fromRGBO(0, 0, 0, .4),
+                                blurRadius: 12,
+                                offset: Offset(0, 2), // Shadow position
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                   : ListView.builder(
+                      clipBehavior: Clip.none,
                       itemBuilder: (ctx, index) {
                         return RoomCell(
                           // onDeleteItem: null,
@@ -109,16 +127,24 @@ class _RoomPageState extends State<RoomPage> {
                       itemCount: rooms.length,
                     ),
             ),
-            Expanded(
-                child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  createRoom();
-                },
-                child: Text("Create Room"),
-              ),
-            ))
+            // Expanded(
+            //   child: Center(
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         createRoom();
+            //       },
+            //       child: Text("Create Room"),
+            //     ),
+            //   ),
+            // )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: createRoom,
+          child: Icon(Icons.add),
+          backgroundColor: Color(0xFF231917),
+          // color: Colors.red,
+          // splashColor: Colors.red,
         ),
       ),
     );

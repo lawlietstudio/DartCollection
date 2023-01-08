@@ -4,7 +4,7 @@ class GameHub {
   // mac
   // static var serverUrl = "http://192.168.5.31:5099/gamehub";
   // windows
-  static var serverUrl = "https://prsgame.lawlietstudio.com/gamehub";
+  static var serverUrl = "https://prs.lawlietstudio.com/gamehub";
   // static var serverUrl = "http://192.168.5.40:5099/gamehub";
 
   static HubConnection hubConnection =

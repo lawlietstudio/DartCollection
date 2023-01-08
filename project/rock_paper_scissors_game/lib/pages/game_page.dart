@@ -38,7 +38,8 @@ class GamePage extends StatefulWidget {
   State<GamePage> createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GamePage>
+    with SingleTickerProviderStateMixin {
   String opponentGestureName = "empty";
   String currentGestureName = "cover";
   Gesture currentGesture = Gesture.none;
@@ -48,9 +49,15 @@ class _GamePageState extends State<GamePage> {
 
   VoidCallback? disconnectCallback;
 
+  AnimationController? rotationController;
+
   @override
   void initState() {
     super.initState();
+
+    rotationController = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
+    ;
 
     GameHub.hubConnection.onreconnecting(
       ({error}) {
@@ -70,7 +77,7 @@ class _GamePageState extends State<GamePage> {
       setState(() {
         gameStatus = GameStatus.perparing;
         opponentGestureName = "cover";
-        caption = "Please select a gesture";
+        caption = "Please select a shape";
       });
     });
 
@@ -81,28 +88,42 @@ class _GamePageState extends State<GamePage> {
       Gesture opponentGesture = Gesture.values[opponentGestureIndex];
       setState(() {
         gameStatus = GameStatus.done;
-        opponentGestureName = opponentGesture.toShortString();
-        if (currentGesture == opponentGesture) {
-          caption = "You Draw!";
-        } else if (currentGesture == Gesture.paper) {
-          if (opponentGesture == Gesture.rock) {
-            caption = "You Win!";
-          } else if (opponentGesture == Gesture.scissors) {
-            caption = "You Lose!";
-          }
-        } else if (currentGesture == Gesture.rock) {
-          if (opponentGesture == Gesture.scissors) {
-            caption = "You Win!";
-          } else if (opponentGesture == Gesture.paper) {
-            caption = "You Lose!";
-          }
-        } else if (currentGesture == Gesture.scissors) {
-          if (opponentGesture == Gesture.paper) {
-            caption = "You Win!";
-          } else if (opponentGesture == Gesture.rock) {
-            caption = "You Lose!";
-          }
-        }
+        // opponentGestureName = opponentGesture.toShortString();
+        rotationController?.forward(from: 0.0);
+
+        Future.delayed(Duration(milliseconds: 250), () {
+          setState(() {
+            // newGesture += "_reverse";
+            opponentGestureName = opponentGesture.toShortString() + "_reverse";
+          });
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          setState(() {
+            if (currentGesture == opponentGesture) {
+              caption = "It is a Tie!";
+            } else if (currentGesture == Gesture.paper) {
+              if (opponentGesture == Gesture.rock) {
+                caption = "You Win!";
+              } else if (opponentGesture == Gesture.scissors) {
+                caption = "You Lose!";
+              }
+            } else if (currentGesture == Gesture.rock) {
+              if (opponentGesture == Gesture.scissors) {
+                caption = "You Win!";
+              } else if (opponentGesture == Gesture.paper) {
+                caption = "You Lose!";
+              }
+            } else if (currentGesture == Gesture.scissors) {
+              if (opponentGesture == Gesture.paper) {
+                caption = "You Win!";
+              } else if (opponentGesture == Gesture.rock) {
+                caption = "You Lose!";
+              }
+            }
+            opponentGestureName = opponentGesture.toShortString();
+            rotationController!.value = 0;
+          });
+        });
       });
     });
 
@@ -129,6 +150,7 @@ class _GamePageState extends State<GamePage> {
     GameHub.hubConnection.off("GameStart");
     GameHub.hubConnection.off("OpponentSelectGesture");
     GameHub.hubConnection.off("RoomReset");
+    GameHub.hubConnection.invoke("QuitRoom", args: [widget.roomId]);
   }
 
   @override
@@ -145,118 +167,155 @@ class _GamePageState extends State<GamePage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          shadowColor: Color.fromRGBO(0, 0, 0, .7),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              GameHub.hubConnection.invoke("QuitRoom", args: [widget.roomId]);
-              Navigator.pop(context);
-            },
-          ),
+          // shadowColor: Color.fromRGBO(0, 0, 0, .7),
+          // leading: IconButton(
+          //   icon: Icon(Icons.arrow_back_ios),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
           title: FittedBox(
             fit: BoxFit.fitWidth,
             child: Text(widget.roomName),
           ),
-          actions: [
-            Visibility(
-              visible: gameStatus == GameStatus.done,
-              maintainState: true,
-              maintainAnimation: true,
-              maintainSize: true,
-              child: IconButton(
-                icon: Icon(Icons.replay),
-                onPressed: () {
-                  restartGame();
-                },
-              ),
-            )
-          ],
+          // actions: [
+          //   Visibility(
+          //     visible: gameStatus == GameStatus.done,
+          //     maintainState: true,
+          //     maintainAnimation: true,
+          //     maintainSize: true,
+          //     child: IconButton(
+          //       icon: Icon(Icons.replay),
+          //       onPressed: () {
+          //         restartGame();
+          //       },
+          //     ),
+          //   )
+          // ],
         ),
         body: SafeArea(
           bottom: true,
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Transform(
-                    transform: Matrix4.rotationZ(
-                      pi,
-                    ),
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                flex: 4,
+                child: Transform(
+                  transform: Matrix4.rotationZ(
+                    pi,
+                  ),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: AnimatedBuilder(
+                      animation: rotationController!,
+                      builder: (BuildContext context, Widget? child) {
+                        return Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()
+                            ..setEntry(3, 2, 0.001)
+                            ..rotateY(
+                              rotationController!.value * (pi),
+                            ),
+                          child: child,
+                        );
+                      },
                       child: PlayerCard(card: opponentGestureName),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(caption),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        caption,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              color: Color.fromRGBO(0, 0, 0, .4),
+                              blurRadius: 12,
+                              offset: Offset(0, 2), // Shadow position
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: PlayerCard(card: currentGestureName),
-                  ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: PlayerCard(card: currentGestureName),
                 ),
-                Expanded(
-                  flex: 3,
-                  child: gameStatus == GameStatus.done
-                      ? Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              restartGame();
-                            },
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text("Restart Game"),
-                            ),
+              ),
+              Expanded(
+                flex: 3,
+                child: gameStatus == GameStatus.done
+                    ? Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            restartGame();
+                          },
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Text("Restart Game"),
                           ),
-                        )
-                      : Row(
-                          children: [
-                            OptionCard(
-                              isStarted: (gameStatus == GameStatus.perparing),
-                              gesture: "paper",
-                              onPress: () {
-                                setState(() {
-                                  selectGesture(Gesture.paper);
-                                });
-                              },
-                            ),
-                            OptionCard(
-                              isStarted: (gameStatus == GameStatus.perparing),
-                              gesture: "rock",
-                              onPress: () {
-                                selectGesture(Gesture.rock);
-                              },
-                            ),
-                            OptionCard(
-                              isStarted: (gameStatus == GameStatus.perparing),
-                              gesture: "scissors",
-                              onPress: () {
-                                setState(() {
-                                  selectGesture(Gesture.scissors);
-                                });
-                              },
-                            ),
-                          ],
                         ),
-                )
-              ],
-            ),
+                      )
+                    : Row(
+                        children: [
+                          OptionCard(
+                            isStarted: (gameStatus == GameStatus.perparing),
+                            gesture: "paper",
+                            onPress: () {
+                              setState(() {
+                                selectGesture(Gesture.paper);
+                              });
+                            },
+                          ),
+                          OptionCard(
+                            isStarted: (gameStatus == GameStatus.perparing),
+                            gesture: "rock",
+                            onPress: () {
+                              selectGesture(Gesture.rock);
+                            },
+                          ),
+                          OptionCard(
+                            isStarted: (gameStatus == GameStatus.perparing),
+                            gesture: "scissors",
+                            onPress: () {
+                              setState(() {
+                                selectGesture(Gesture.scissors);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+              )
+            ],
           ),
         ),
+        // floatingActionButton: Visibility(
+        //   visible: gameStatus == GameStatus.done,
+        //   maintainState: true,
+        //   maintainAnimation: true,
+        //   maintainSize: true,
+        //   child: FloatingActionButton(
+        //     onPressed: restartGame,
+        //     child: Icon(Icons.replay),
+        //     backgroundColor: Color(0xFF231917),
+        //     // color: Colors.red,
+        //     // splashColor: Colors.red,
+        //   ),
+        // ),
       ),
     );
   }
@@ -266,7 +325,7 @@ class _GamePageState extends State<GamePage> {
       currentGestureName = newGesture.toShortString();
       currentGesture = newGesture;
       // print("${newGesture.toShortString()}, ${newGesture.index}");
-      caption = "Waiting for opponent to select a gesture";
+      caption = "Waiting for opponent to select a shape";
       GameHub.hubConnection
           .invoke("SelectGesture", args: [widget.roomId, newGesture.index]);
     });

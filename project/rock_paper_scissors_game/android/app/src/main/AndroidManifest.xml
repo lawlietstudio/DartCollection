@@ -2,7 +2,7 @@
     package="com.example.rock_paper_scissors_game">
    <application
         android:label="rock_paper_scissors_game"
-        android:name="${applicationName}"
+        android:name="Paper Rock Scissors Online"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

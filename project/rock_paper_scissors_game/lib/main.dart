@@ -13,16 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<int, Color> color = {
-      50: Color.fromRGBO(136, 14, 79, .1),
-      100: Color.fromRGBO(136, 14, 79, .2),
-      200: Color.fromRGBO(136, 14, 79, .3),
-      300: Color.fromRGBO(136, 14, 79, .4),
-      400: Color.fromRGBO(136, 14, 79, .5),
-      500: Color.fromRGBO(136, 14, 79, .6),
-      600: Color.fromRGBO(136, 14, 79, .7),
-      700: Color.fromRGBO(136, 14, 79, .8),
-      800: Color.fromRGBO(136, 14, 79, .9),
-      900: Color.fromRGBO(136, 14, 79, 1),
+      50: Color.fromRGBO(35, 25, 23, .1),
+      100: Color.fromRGBO(35, 25, 23, .2),
+      200: Color.fromRGBO(35, 25, 23, .3),
+      300: Color.fromRGBO(35, 25, 23, .4),
+      400: Color.fromRGBO(35, 25, 23, .5),
+      500: Color.fromRGBO(35, 25, 23, .6),
+      600: Color.fromRGBO(35, 25, 23, .7),
+      700: Color.fromRGBO(35, 25, 23, .8),
+      800: Color.fromRGBO(35, 25, 23, .9),
+      900: Color.fromRGBO(35, 25, 23, 1),
     };
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
       //   scaffoldBackgroundColor: Color(0xFF0A0E21),
       // ),
       theme: ThemeData(
+        fontFamily: "SkullphabetOne",
         primarySwatch: MaterialColor(0xFF231917, color),
       ),
       home: const HomePage(),

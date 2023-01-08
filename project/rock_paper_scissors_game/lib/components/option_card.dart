@@ -35,7 +35,7 @@ class OptionCard extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Color.fromRGBO(0, 0, 0, .7),
-                        blurRadius: 16,
+                        blurRadius: 12,
                         offset: Offset(0, 2), // Shadow position
                       ),
                     ],
